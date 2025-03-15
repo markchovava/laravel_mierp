@@ -18,9 +18,32 @@ class UserController extends Controller
         return substr($shuffled, 0, $length);
     }
 
-    public function indexBySubsidiary($id){
-        $data = User::with(['user', 'subsidiary'])
-                ->where('subsidiary_id', $id)
+    public function indexBySubsidiary(){
+        $user = Auth::user();
+        $data = User::with(['role', 'subsidiary'])
+                ->where('id', '!=', $user->id)
+                ->where('subsidiary_id', $user->subsidiary_id)
+                ->orderBy('updated_at', 'DESC')
+                ->orderBy('name', 'ASC')
+                ->paginate(12);
+        return UserResource::collection($data);
+    }
+
+    public function searchBySubsidiary($search){
+        $user = Auth::user();
+        if(!empty($search)) {
+            $data = User::with(['role', 'subsidiary'])
+                    ->where('subsidiary_id', $user->subsidiary_id)
+                    ->where('id', '!=', $user->id)
+                    ->where('name', 'LIKE', '%' . $search . '%')
+                    ->orderBy('updated_at', 'DESC')
+                    ->orderBy('name', 'ASC')
+                    ->paginate(12);
+            return UserResource::collection($data);
+        }
+        $data = User::with(['role', 'subsidiary'])
+                ->where('id', '!=', $user->id)
+                ->where('subsidiary_id', $user->subsidiary_id)
                 ->orderBy('updated_at', 'DESC')
                 ->orderBy('name', 'ASC')
                 ->paginate(12);

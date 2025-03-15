@@ -11,11 +11,31 @@ use Illuminate\Support\Facades\Auth;
 
 class SalesController extends Controller
 {
-    public function indexBySubsidiary($id){
+    public function indexBySubsidiary(){
+        $user = Auth::user();
         $data = Sales::with(['user', 'subsidiary'])
-                ->where('subsidiary_id', $id)
+                ->where('subsidiary_id', $user->subsidiary_id)
                 ->orderBy('updated_at', 'DESC')
                 ->orderBy('total', 'DESC')
+                ->paginate(12);
+        return SalesResource::collection($data);
+    }
+
+    public function searchBySubsidiary($search){
+        $user = Auth::user();
+        if(!empty($search)){
+            $data = Sales::with(['user', 'subsidiary'])
+                    ->where('subsidiary_id', $user->subsidiary_id)
+                    ->where('supplier_name', 'LIKE', '%' . $search . '%')
+                    ->orderBy('updated_at', 'DESC')
+                    ->orderBy('total', 'DESC')
+                    ->paginate(12);
+            return SalesResource::collection($data);
+        }
+        $data = Sales::with(['user', 'subsidiary'])
+                ->where('subsidiary_id', $user->subsidiary_id)
+                ->orderBy('updated_at', 'DESC')
+                ->orderBy('supplier_name', 'ASC')
                 ->paginate(12);
         return SalesResource::collection($data);
     }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigInteger('role_level')->nullable();
             $table->bigInteger('subsidiary_id')->nullable();
             $table->string('name')->nullable();
-            $table->integer('is_admin')->nullable();
+            $table->string('is_admin')->nullable();
             $table->string('email')->unique();
             $table->string('phone')->nullable();
             $table->longText('address')->nullable();

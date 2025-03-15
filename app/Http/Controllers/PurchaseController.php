@@ -13,9 +13,29 @@ use Illuminate\Support\Facades\Log;
 class PurchaseController extends Controller
 {
     
-    public function indexBySubsidiary($id){
+    public function indexBySubsidiary(){
+        $user = Auth::user();
         $data = Purchase::with(['user', 'subsidiary'])
-                ->where('subsidiary_id', $id)
+                ->where('subsidiary_id', $user->subsidiary_id)
+                ->orderBy('updated_at', 'DESC')
+                ->orderBy('supplier_name', 'ASC')
+                ->paginate(12);
+        return PurchaseResource::collection($data);
+    }
+
+    public function searchBySubsidiary($search){
+        $user = Auth::user();
+        if(!empty($search)){
+            $data = Purchase::with(['user', 'subsidiary'])
+                    ->where('subsidiary_id', $user->subsidiary_id)
+                    ->where('supplier_name', 'LIKE', '%' . $search . '%')
+                    ->orderBy('updated_at', 'DESC')
+                    ->orderBy('supplier_name', 'ASC')
+                    ->paginate(12);
+            return PurchaseResource::collection($data);
+        }
+        $data = Purchase::with(['user', 'subsidiary'])
+                ->where('subsidiary_id', $user->subsidiary_id)
                 ->orderBy('updated_at', 'DESC')
                 ->orderBy('supplier_name', 'ASC')
                 ->paginate(12);

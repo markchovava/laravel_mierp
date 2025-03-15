@@ -12,8 +12,7 @@ class ProductController extends Controller
 {
     
     public function indexByAuthSubsidiary(){
-        $user_id = Auth::user()->id;
-        $user = User::find($user_id);
+        $user = Auth::user();
         $data = Product::with(['user', 'subsidiary'])
                 ->where('subsidiary_id', $user->subsidiary_id)
                 ->orderBy('updated_at', 'DESC')
@@ -22,9 +21,29 @@ class ProductController extends Controller
         return ProductResource::collection($data);
     }
     
-    public function indexBySubsidiary($id){
+    public function indexBySubsidiary(){
+        $user = Auth::user();
         $data = Product::with(['user', 'subsidiary'])
-                ->where('subsidiary_id', $id)
+                ->where('subsidiary_id', $user->subsidiary_id)
+                ->orderBy('updated_at', 'DESC')
+                ->orderBy('name', 'ASC')
+                ->paginate(12);
+        return ProductResource::collection($data);
+    }
+
+    public function searchBySubsidiary($search){
+        $user = Auth::user();
+        if(!empty($search)){
+            $data = Product::with(['user', 'subsidiary'])
+                    ->where('subsidiary_id', $user->subsidiary_id)
+                    ->where('name', 'LIKE', '%' . $search . '%')
+                    ->orderBy('updated_at', 'DESC')
+                    ->orderBy('name', 'ASC')
+                    ->paginate(12);
+            return ProductResource::collection($data);
+        }
+        $data = Product::with(['user', 'subsidiary'])
+                ->where('subsidiary_id', $user->subsidiary_id)
                 ->orderBy('updated_at', 'DESC')
                 ->orderBy('name', 'ASC')
                 ->paginate(12);

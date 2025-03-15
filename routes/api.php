@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppInfoController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
@@ -55,7 +56,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::delete('/{id}', [ExpenseController::class, 'delete']);
     });
     Route::get('/expense-search/{search}', [ExpenseController::class, 'search']);
-    Route::get('/expense-by-subsidiary/{id}', [ExpenseController::class, 'indexBySubsidiary']);
+    Route::get('/expense-by-subsidiary', [ExpenseController::class, 'indexBySubsidiary']);
+    Route::get('/expense-search-by-subsidiary/{search}', [ExpenseController::class, 'searchBySubsidiary']);
     
     /* PRODUCT */
     Route::prefix('product')->group(function() {
@@ -66,7 +68,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::delete('/{id}', [ProductController::class, 'delete']);
     });
     Route::get('/product-search/{search}', [ProductController::class, 'search']);
-    Route::get('/product-by-subsidiary/{id}', [ProductController::class, 'indexBySubsidiary']);
+    Route::get('/product-by-subsidiary', [ProductController::class, 'indexBySubsidiary']);
+    Route::get('/product-search-by-subsidiary/{search}', [ProductController::class, 'searchBySubsidiary']);
     Route::get('/product-by-auth-subsidiary', [ProductController::class, 'indexByAuthSubsidiary']);
 
     /* PURCHASE */
@@ -78,7 +81,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::delete('/{id}', [PurchaseController::class, 'delete']);
     });
     Route::get('/purchase-search/{search}', [PurchaseController::class, 'search']);
-    Route::get('/purchase-by-subsidiary/{id}', [PurchaseController::class, 'indexBySubsidiary']);
+    Route::get('/purchase-by-subsidiary', [PurchaseController::class, 'indexBySubsidiary']);
+    Route::get('/purchase-search-by-subsidiary/{search}', [PurchaseController::class, 'searchBySubsidiary']);
     /* PURCHASEITEM */
     Route::prefix('purchase-item')->group(function() {
         Route::delete('/{id}', [PurchaseItemController::class, 'delete']);
@@ -94,7 +98,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::delete('/{id}', [SalesController::class, 'delete']);
     });
     Route::get('/sales-search/{search}', [SalesController::class, 'search']);
-    Route::get('/sales-by-subsidiary/{id}', [SalesController::class, 'indexBySubsidiary']);
+    Route::get('/sales-by-subsidiary', [SalesController::class, 'indexBySubsidiary']);
+    Route::get('/sales-search-by-subsidiary/{search}', [SalesController::class, 'searchBySubsidiary']);
     /* SALESITEM */
     Route::prefix('sales-item')->group(function() {
         Route::delete('/{id}', [SalesItemController::class, 'delete']);
@@ -133,7 +138,14 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::delete('/{id}', [UserController::class, 'delete']);
     });
     Route::get('/user-search/{search}', [UserController::class, 'search']);
-    Route::get('/user-by-subsidiary/{id}', [UserController::class, 'indexBySubsidiary']);
+    Route::get('/user-by-subsidiary', [UserController::class, 'indexBySubsidiary']);
+    Route::get('/user-search-by-subsidiary/{search}', [UserController::class, 'searchBySubsidiary']);
+    
+    
+    
+    
+    Route::get('/subsidiary-totals', [DashboardController::class, 'indexBySubsidiaryDashboard']);
+    Route::get('/admin-totals', [DashboardController::class, 'indexDashboard']);
 
    
 

@@ -24,7 +24,7 @@ class AuthController extends Controller
         }
         $data = new User();
         $data->role_level = 4;
-        $data->is_admin = 0;
+        $data->is_admin = 'No';
         $data->email = $request->email;
         $data->code = $request->password;
         $data->password = Hash::make($request->password);
@@ -39,7 +39,7 @@ class AuthController extends Controller
     }
 
     public function login(Request $request){
-        $user = User::with(['role'])->where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
         /* Check Email... */
         if(!isset($user)){
             return response()->json([
@@ -59,7 +59,7 @@ class AuthController extends Controller
             'status' => 1,
             'message' => 'Login Successful.',
             'auth_token' => $user->createToken($user->email)->plainTextToken,
-            'role_level' => $user->role_level ?? 4,
+            'data' => new AuthResource($user),
         ]);
     }
 
@@ -78,7 +78,7 @@ class AuthController extends Controller
 
     public function view(){
         $user_id = Auth::user()->id;
-        $data = User::with(['role','membership'])->find($user_id);
+        $data = User::with(['role','subsidiary'])->find($user_id);
         return response()->json([
             'data' => new AuthResource($data),
         ]);

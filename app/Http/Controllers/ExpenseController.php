@@ -11,9 +11,29 @@ use Illuminate\Support\Facades\Auth;
 class ExpenseController extends Controller
 {
     
-    public function indexBySubsidiary($id){
+    public function indexBySubsidiary(){
+        $user = Auth::user();
         $data = Expense::with(['user', 'subsidiary'])
-                ->where('subsidiary_id', $id)
+                ->where('subsidiary_id', $user->subsidiary_id)
+                ->orderBy('updated_at', 'DESC')
+                ->orderBy('detail', 'ASC')
+                ->paginate(12);
+        return ExpenseResource::collection($data);
+    }
+
+    public function searchBySubsidiary($search){
+        $user = Auth::user();
+        if(!empty($search)){
+            $data = Expense::with(['user', 'subsidiary'])
+                    ->where('subsidiary_id', $user->subsidiary_id)
+                    ->where('detail', 'LIKE', '%' . $search . '%')
+                    ->orderBy('updated_at', 'DESC')
+                    ->orderBy('detail', 'ASC')
+                    ->paginate(12);
+            return ExpenseResource::collection($data);
+    }
+        $data = Expense::with(['user', 'subsidiary'])
+                ->where('subsidiary_id', $user->subsidiary_id)
                 ->orderBy('updated_at', 'DESC')
                 ->orderBy('detail', 'ASC')
                 ->paginate(12);
